@@ -4,8 +4,8 @@
 
 Serializer::Serializer()
 {
-}
 
+}
 
 Serializer::~Serializer()
 {

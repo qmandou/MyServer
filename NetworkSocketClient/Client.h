@@ -17,12 +17,13 @@ public:
 	Client();
 	~Client();
 	
-	bool Connect(bool isSchool, int port);
+	bool Connect(const char* adr, int port);
 	bool IsConnected();
 	bool CloseSocket(); 
 	
 	bool Receive();
 	bool SendBuffer();
+	bool Send(char* _buffer);
 
 	void DebugBuffer();
 

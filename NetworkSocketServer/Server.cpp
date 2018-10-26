@@ -60,41 +60,40 @@ void Server::Send(const char* buffer, int _bufferLenght)
 
 char* Server::Receive(int _size)
 {
-	buffer = new char[_size];
 	if (recv(csock, buffer, _size, 0) < 0) return nullptr;
 	return buffer;
 }
 
-bool Server::PlusOuMoins()
-{
-	char* buffer = nullptr;
-	buffer = Receive(512);
+#pragma endregion
 
-	if (buffer != nullptr)
-	{
-		int result = atoi(buffer);
-		cout << result << endl;
-
-		if (result > random)
-		{
-			char toSend[8] = "Moins !";
-			Send(toSend, 8);
-		}
-		else if (result < random)
-		{
-			char toSend[7] = "Plus !";
-			Send(toSend, 7);
-		}
-		else
-		{
-			char toSend[11] = "Tu gagne !";
-			Send(toSend, 11);
-			return true;
-		} 
-
-		SEPARATOR;
-		return false;
-	}
-}
-
-
+//bool Server::PlusOuMoins()
+//{
+//	char* buffer = nullptr;
+//	buffer = Receive(512);
+//
+//	if (buffer != nullptr)
+//	{
+//		int result = atoi(buffer);
+//		cout << result << endl;
+//
+//		if (result > random)
+//		{
+//			char toSend[8] = "Moins !";
+//			Send(toSend, 8);
+//		}
+//		else if (result < random)
+//		{
+//			char toSend[7] = "Plus !";
+//			Send(toSend, 7);
+//		}
+//		else
+//		{
+//			char toSend[11] = "Tu gagne !";
+//			Send(toSend, 11);
+//			return true;
+//		} 
+//
+//		SEPARATOR;
+//		return false;
+//	}
+//}

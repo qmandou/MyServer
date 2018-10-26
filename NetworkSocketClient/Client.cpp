@@ -12,7 +12,7 @@ Client::~Client()
 
 }
 
-bool Client::Connect(bool isSchool, int port)
+bool Client::Connect(const char* adr, int port)
 {
 	if (WSAStartup(MAKEWORD(2, 2), &data) != 0)
 	{
@@ -23,7 +23,7 @@ bool Client::Connect(bool isSchool, int port)
 
 	socketClient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	sin.sin_addr.s_addr = inet_addr(isSchool ? "133.133.2.52" : "192.168.1.15");
+	sin.sin_addr.s_addr = inet_addr(adr);
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port); 
 
@@ -50,6 +50,11 @@ bool Client::Receive()
 bool Client::SendBuffer()
 {
 	return send(socketClient, buffer, GetSizeOfBuffer(), 0) < 0 ? false : true;
+}
+
+bool Client::Send(char* _buffer)
+{
+	return send(socketClient, _buffer, sizeof(_buffer), 0) < 0 ? false : true;
 }
 
 void Client::DebugBuffer()
