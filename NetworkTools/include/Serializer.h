@@ -9,6 +9,8 @@
 
 class Serializer
 {
+
+private:
 	SOCKET sock;
 	char* resvBuffer = nullptr;
 
@@ -17,19 +19,24 @@ public:
 	~Serializer();
 
 	template<typename T>
-	bool Send(T _toSend, UINT sizeArray = 1)
+	bool Send(T _toSend)
 	{
-		char* toSend = reinterpret_cast<char*>(&_toSend);
-		return send(sock, toSend, sizeof(T) * sizeArray, 0) < 0 ? false : true;
+		if (is_pointer<T>())
+		{
+			char* toSend = reinterpret_cast<char*>(_toSend);
+			return send(sock, toSend, sizeof(T) * sizeof(_toSend), 0) < 0 ? false : true;
+		}
+		else
+		{
+			char* toSend = reinterpret_cast<char*>(&_toSend);
+			return send(sock, toSend, sizeof(T), 0) < 0 ? false : true;
+		}
+
 	}
 
 	bool Receive(int _sizeofBuffer)
 	{
-		if (resvBuffer != nullptr) delete resvBuffer;
-		resvBuffer = new char[_sizeofBuffer];
-
-		int returnValue = recv(sock, resvBuffer, _sizeofBuffer, 0);
-		return  returnValue < 0 ? false : true;
+		return recv(sock, resvBuffer, _sizeofBuffer, 0) < 0 ? false : true;
 	}
 
 	template<typename T>
@@ -37,7 +44,6 @@ public:
 	{
 		return reinterpret_cast<T*>(resvBuffer);
 	}
-
 
 	bool resvBufferIsNull()
 	{

@@ -13,27 +13,23 @@ class Server
 {
 
 public:
-	Server(const char* _ip, int _port);
+	SOCKET sock;
+	SOCKET csock;
+
+	Server();
 	~Server();
 
+	bool Connect(const char* _ip, int _port);
 	bool isConnect();
 	bool Accept();
-	bool PlusOuMoins();
-
-	void Send(const char* buffer, int _bufferLenght);
-	char* Receive(int _size);
-	void CloseSocket();
+	bool CloseSocket();
 
 private:
 
 	WSADATA WSAData;
-	SOCKET sock;
-	SOCKET csock;
 	SOCKADDR_IN sin;
 	SOCKADDR_IN csin;
 
-	char* buffer;
-	int random;
 };
 
 

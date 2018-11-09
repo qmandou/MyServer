@@ -4,12 +4,13 @@
 
 Client::Client()
 {
-	
+	cout << "Client Launched" << endl;
+	SEPARATOR;
 }
 
 Client::~Client()
 {
-
+	CloseSocket();
 }
 
 bool Client::Connect(const char* adr, int port)
@@ -21,45 +22,25 @@ bool Client::Connect(const char* adr, int port)
 		return false;
 	}
 
-	socketClient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	sin.sin_addr.s_addr = inet_addr(adr);
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port); 
 
-	if (connect(socketClient, (SOCKADDR *)&sin, sizeof(sin)) < 0) return false;
-	return socketClient == INVALID_SOCKET ? false : true;
+	if (connect(sock, (SOCKADDR *)&sin, sizeof(sin)) < 0) return false;
+	return sock == INVALID_SOCKET ? false : true;
 }
 
 bool Client::IsConnected()
 {
-	return socketClient == INVALID_SOCKET ? false : true;
+	return sock != INVALID_SOCKET ? true : false;
 }
 
 bool Client::CloseSocket()
 {
-	if (closesocket(socketClient) < 0 || WSACleanup() < 0) return false;
+	if (closesocket(sock) < 0 || WSACleanup() < 0) return false;
 	return true;
-}
-
-bool Client::Receive()
-{
-	return recv(socketClient, buffer, sizeof(buffer), 0) < 0 ? false : true;
-}
-
-bool Client::SendBuffer()
-{
-	return send(socketClient, buffer, GetSizeOfBuffer(), 0) < 0 ? false : true;
-}
-
-bool Client::Send(char* _buffer)
-{
-	return send(socketClient, _buffer, sizeof(_buffer), 0) < 0 ? false : true;
-}
-
-void Client::DebugBuffer()
-{
-	cout << buffer << endl;
 }
 
 //192.168.1.15

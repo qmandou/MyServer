@@ -7,30 +7,40 @@
 
 #pragma region Constructor
 
-Server::Server(const char* _ip, int _port)
+Server::Server()
 {
-	WSAStartup(MAKEWORD(2, 0), &WSAData);
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	sin.sin_addr.s_addr = inet_addr(_ip);
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(_port);
-	bind(sock, (SOCKADDR *)&sin, sizeof(sin));
-	listen(sock, 0);
-	cout << "Server Launched" << endl; 
-
-	random = rand() % 100;
+	cout << "Server Launched" << endl;
 	SEPARATOR;
 }
 
 Server::~Server()
 {
-	closesocket(sock);
-	WSACleanup();
+	CloseSocket();
 }
 
 #pragma endregion
 
 #pragma region Public Function
+
+bool Server::Connect(const char* _ip, int _port)
+{
+	if (WSAStartup(MAKEWORD(2, 2), &WSAData) != 0)
+	{
+		WSACleanup();
+
+		return false;
+	}
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) return false;
+
+	sin.sin_addr.s_addr = inet_addr(_ip);
+	sin.sin_family = AF_INET;
+	sin.sin_port = htons(_port);
+	bind(sock, (SOCKADDR *)&sin, sizeof(sin));
+	listen(sock, 0);
+	return true;
+}
 
 bool Server::isConnect()
 {
@@ -44,24 +54,11 @@ bool Server::Accept()
 	return csock != INVALID_SOCKET ? true : false;
 }
 
-void Server::CloseSocket()
+bool Server::CloseSocket()
 {
 	SEPARATOR;
 	cout << "Server Close" << endl;
-	closesocket(csock);
-	csock = INVALID_SOCKET;
-	WSACleanup();
-}
-
-void Server::Send(const char* buffer, int _bufferLenght)
-{
-	send(csock, buffer, _bufferLenght, 0);
-}
-
-char* Server::Receive(int _size)
-{
-	if (recv(csock, buffer, _size, 0) < 0) return nullptr;
-	return buffer;
+	return (closesocket(sock) < 0 || WSACleanup()) ? false : true;
 }
 
 #pragma endregion

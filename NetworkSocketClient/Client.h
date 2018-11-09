@@ -8,11 +8,13 @@
 #define PAUSE system("pause")
 #define ERASE system("erase")
 
+
 class Client
 {
 
 public:
 	char buffer[512];
+	SOCKET sock;
 
 	Client();
 	~Client();
@@ -20,21 +22,14 @@ public:
 	bool Connect(const char* adr, int port);
 	bool IsConnected();
 	bool CloseSocket(); 
-	
-	bool Receive();
-	bool SendBuffer();
-	bool Send(char* _buffer);
 
-	void DebugBuffer();
-
-	inline SOCKET GetClientSocket() { return socketClient; };
+	inline SOCKET GetClientSocket() { return sock; };
 	inline unsigned int GetSizeOfBuffer() { return sizeof(buffer); }
 
 private:
 	WSAData data;
 	char ipAdr[13];
 
-	SOCKET socketClient;
 	SOCKADDR_IN sin;
 };
 

@@ -1,29 +1,43 @@
 #ifndef SERIALIZER__H
 #define SERIALIZER__H
 
+#define EOM '\0'
+
+#include <WinSock2.h>
+#include <type_traits>
+
 class Serializer
 {
-private:
-	char* buffer;
+	SOCKET sock;
+	char* resvBuffer = nullptr;
 
 public:
-	Serializer();
+	Serializer(SOCKET& _sock);
 	~Serializer();
 
-
-	template<typename T> void Serialize(T toSerialize)
+	template<typename T>
+	bool Send(T& _toSend, UINT sizeArray = 1)
 	{
-		buffer = reinterpret_cast<char*>(toSerialize);
+		char* toSend = reinterpret_cast<char*>(&_toSend);
+		return send(sock, toSend, sizeof(T) * sizeArray, 0) < 0 ? false : true;
 	}
 
-	template<typename T> T Unserialize()
+	bool Receive(int _sizeofBuffer)
 	{
-		return reinterpret_cast<T>(buffer);
+		return recv(sock, resvBuffer, _sizeofBuffer, 0) < 0 ? false : true;
 	}
 
-	inline char* GetBuffer() { return buffer; }
+	template<typename T>
+	T* UnSerializeBuffer()
+	{
+		return reinterpret_cast<T*>(resvBuffer);
+	}
 
-	template<typename T> inline T GetBuffer() { return Unserialize<T>(); }
+
+	bool resvBufferIsNull()
+	{
+		return resvBuffer == nullptr ? true : false;
+	}
 };
 #endif // !SERIALIZER__H
 
