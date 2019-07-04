@@ -1,15 +1,11 @@
 #include "pch.h"
 #include "Server.h"
 
-#define SEPARATOR cout << "--------------------" << endl
-#define PAUSE system("pause")
-#define ERASE system("erase")
-
 #pragma region Constructor
 
 Server::Server()
 {
-	cout << "Server Launched" << endl;
+	std::cout << "Server Launched" << std::endl;
 	SEPARATOR;
 }
 
@@ -22,7 +18,7 @@ Server::~Server()
 
 #pragma region Public Function
 
-bool Server::Connect(const char* _ip, int _port)
+bool Server::Connect(char* _ip, int _port)
 {
 	if (WSAStartup(MAKEWORD(2, 2), &WSAData) != 0)
 	{
@@ -39,25 +35,32 @@ bool Server::Connect(const char* _ip, int _port)
 	sin.sin_port = htons(_port);
 	bind(sock, (SOCKADDR *)&sin, sizeof(sin));
 	listen(sock, 0);
+	m_IsRunning = true;
 	return true;
 }
 
-bool Server::isConnect()
+void Server::Accept(std::mutex* _mutex)
 {
-	return csock != INVALID_SOCKET ? true : false;
-}
+	while (m_IsRunning)
+	{
+		SOCKADDR_IN csin;
+		int sinsize = sizeof(csin);
+		SOCKET csock = accept(sock, (SOCKADDR *)&csin, &sinsize);
 
-bool Server::Accept()
-{
-	int sinsize = sizeof(csin);
-	csock = accept(sock, (SOCKADDR *)&csin, &sinsize);
-	return csock != INVALID_SOCKET ? true : false;
+		if (csock != INVALID_SOCKET)
+		{
+			_mutex->lock();
+			std::cout << "ADD Client " << std::endl;
+			clients.push_back(new ClientData(csock, csin));
+			_mutex->unlock();
+		}
+	}
 }
 
 bool Server::CloseSocket()
 {
 	SEPARATOR;
-	cout << "Server Close" << endl;
+	std::cout << "Server Close" << std::endl;
 	return (closesocket(sock) < 0 || WSACleanup()) ? false : true;
 }
 

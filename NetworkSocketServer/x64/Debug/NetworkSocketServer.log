@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  Serializer.cpp
+  ServerMain.cpp
+  Server.cpp
+  Generating Code...
+  NetworkSocketServer.vcxproj -> W:\GitHub\MyServer\x64\Debug\NetworkSocketServer.exe

@@ -19,7 +19,7 @@ public:
 	Client();
 	~Client();
 	
-	bool Connect(const char* adr, int port);
+	bool Connect(char* adr, int port);
 	bool IsConnected();
 	bool CloseSocket(); 
 

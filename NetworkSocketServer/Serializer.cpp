@@ -9,6 +9,6 @@ Serializer::Serializer(SOCKET& _sock)
 
 Serializer::~Serializer()
 {
-	delete[] resvBuffer;
+	delete[] recvBuffer;
 }
 

@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  Client.cpp
+  ClientMain.cpp
+  Serializer.cpp
+  Generating Code...
+  NetworkSocketClient.vcxproj -> W:\GitHub\MyServer\x64\Debug\NetworkSocketClient.exe
